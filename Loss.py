@@ -29,18 +29,17 @@ def loss_fn_kd(teacher_out, student_out, labels, t_s_map_dict, params):
     # print(F.log_softmax(teacher_out['logits']/T, dim=1).shape)
 
     # former part
-    # 负数？？    训练时打印出来看
     # print(nn.KLDivLoss()(m(student_out['logits']/T), m(student_out['logits']/T)))
-    print(nn.KLDivLoss()(m(student_out['logits'] / T).log(), m(teacher_out['logits'] / T)) * (alpha * T * T))
+#     print(nn.KLDivLoss()(m(student_out['logits'] / T).log(), m(teacher_out['logits'] / T)) * (alpha * T * T))
 
     # later part
     # F.cross_entropy would get error: RuntimeError: CUDA error: device-side assert triggered
     # print(bce(student_out['final'], labels)* (1. - alpha)
 
-    print(bce(m(student_out['final']), labels) * (1. - alpha))
+#     print(bce(m(student_out['final']), labels) * (1. - alpha))
 
-    print(nn.KLDivLoss()(m(student_out['logits'] / T).log(), m(teacher_out['logits'] / T)) * (alpha * T * T) \
-          + bce(student_out['final'], labels) * (1. - alpha))
+#     print(nn.KLDivLoss()(m(student_out['logits'] / T).log(), m(teacher_out['logits'] / T)) * (alpha * T * T) \
+#           + bce(student_out['final'], labels) * (1. - alpha))
     # exit(0)
 
     # todo: sigmoid to activate logits
@@ -70,8 +69,8 @@ def loss_fn_fitnet(teacher_out, student_out, labels, t_s_map_dict, params):
     loss2 = nn.KLDivLoss()(m(student_out['logits'] / T).log(), m(teacher_out['logits'] / T)) * (alpha * T * T) \
             + bce(student_out['final'], labels) * (1. - alpha)
 
-    print(loss1.cuda() * beta)
-    print(loss2)
+#     print(loss1.cuda() * beta)
+#     print(loss2)
     # exit(0)
     return loss1.cuda() * beta + loss2 * 100
 
@@ -99,10 +98,10 @@ def loss_fn_at(teacher_out, student_out, labels, t_s_map_dict, params):
     g_t = teacher_out['feas']
     loss_groups = at_loss(g_s, g_t)
 
-    print(logits_loss)
-    print(loss_groups)
-    print(params.gama * loss_groups)
-    print(logits_loss + params.gama * loss_groups)
+#     print(logits_loss)
+#     print(loss_groups)
+#     print(params.gama * loss_groups)
+#     print(logits_loss + params.gama * loss_groups)
     # exit(0)
     return logits_loss + params.gama * loss_groups
 
@@ -114,7 +113,6 @@ def loss_fn_KC(teacher_out, student_out, labels, t_s_map_dict, params):
     # p = m(student_out['logits'] / params.temperature)
     # q = m(teacher_out['logits'] / params.temperature)
 
-    # l_kl and l_ce could dismatch , 处理方法：每个平面中位于同一位置的各个通道中的所有数求平均  （加起来，除以通道数
     # l_kl = F.kl_div(p, q, size_average=False) * (params.alpha * params.temperature * params.temperature)
     # l_ce = bce(student_out['logits'], labels)* (1. - params.alpha)
     # logits_loss = l_kl * params.alpha + l_ce * (1. - params.alpha)
